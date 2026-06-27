@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Tema 3 — Estatut d'Autonomia de la Comunitat Valenciana | Opositar en Valencia</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --naranja: #d97706;
+    --naranja-claro: #fef3c7;
+    --naranja-borde: #f59e0b;
+    --azul-oscuro: #1e293b;
+    --texto: #374151;
+    --texto-suave: #6b7280;
+    --borde: #e5e7eb;
+    --fondo: #fafaf9;
+    --blanco: #ffffff;
+    --verde: #166534;
+    --verde-bg: #f0fdf4;
+    --verde-borde: #86efac;
+    --rojo: #991b1b;
+    --rojo-bg: #fef2f2;
+    --rojo-borde: #fca5a5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--fondo);
+    color: var(--texto);
+    min-height: 100vh;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  header { background: var(--blanco); border-bottom: 1px solid var(--borde); padding: 0; }
+  .header-top { max-width: 860px; margin: 0 auto; padding: 1.4rem 1.5rem 1rem; display: flex; align-items: flex-start; gap: 1.2rem; }
+  .header-logo { width: 48px; height: 48px; border-radius: 8px; object-fit: contain; flex-shrink: 0; }
+  .header-textos { flex: 1; }
+  .header-site { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--naranja); font-weight: 600; margin-bottom: 3px; }
+  .header-titulo { font-family: 'Lora', serif; font-size: clamp(1.25rem, 3.5vw, 1.75rem); font-weight: 700; color: var(--azul-oscuro); line-height: 1.2; }
+  .header-sub { font-size: 0.88rem; color: var(--texto-suave); margin-top: 4px; }
+  .header-meta { background: var(--naranja-claro); border-top: 1px solid #fde68a; padding: 0.55rem 1.5rem; }
+  .header-meta-inner { max-width: 860px; margin: 0 auto; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; font-size: 0.83rem; color: #92400e; font-weight: 500; }
+  .barra-wrap { position: sticky; top: 0; z-index: 100; background: var(--blanco); border-bottom: 1px solid var(--borde); padding: 0.6rem 1.5rem; box-shadow: 0 1px 6px rgba(0,0,0,0.05); }
+  .barra-inner { max-width: 860px; margin: 0 auto; display: flex; align-items: center; gap: 1rem; }
+  .barra-track { flex: 1; height: 6px; background: #f3f4f6; border-radius: 99px; overflow: hidden; }
+  .barra-fill { height: 100%; background: var(--naranja); border-radius: 99px; transition: width 0.35s ease; width: 0%; }
+  .barra-num { font-size: 13px; font-weight: 600; color: var(--azul-oscuro); white-space: nowrap; min-width: 52px; }
+  .barra-score { font-size: 13px; color: var(--texto-suave); white-space: nowrap; }
+  .barra-score .ok { color: var(--verde); font-weight: 600; }
+  .barra-score .ko { color: var(--rojo); font-weight: 600; }
+  main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+  .card { background: var(--blanco); border: 1px solid var(--borde); border-radius: 10px; padding: 1.5rem 1.6rem; margin-bottom: 1.4rem; transition: box-shadow 0.2s; }
+  .card:hover { box-shadow: 0 3px 14px rgba(0,0,0,0.06); }
+  .card-num { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--naranja); margin-bottom: 0.5rem; }
+  .card-pregunta { font-family: 'Lora', serif; font-size: 1rem; font-weight: 600; line-height: 1.55; color: var(--azul-oscuro); margin-bottom: 1.1rem; }
+  .opciones { display: flex; flex-direction: column; gap: 0.45rem; }
+  .opcion { display: flex; align-items: flex-start; gap: 0.7rem; padding: 0.7rem 1rem; border: 1.5px solid var(--borde); border-radius: 7px; cursor: pointer; background: var(--blanco); text-align: left; font-family: 'Source Sans 3', sans-serif; font-size: 0.93rem; color: var(--texto); line-height: 1.5; transition: border-color 0.15s, background 0.15s; width: 100%; }
+  .opcion:hover:not(:disabled) { border-color: var(--naranja-borde); background: var(--naranja-claro); }
+  .opcion .letra { font-weight: 700; color: var(--naranja); min-width: 18px; font-size: 0.85rem; margin-top: 2px; flex-shrink: 0; }
+  .opcion.correcta { border-color: var(--verde-borde); background: var(--verde-bg); color: var(--verde); }
+  .opcion.correcta .letra { color: #15803d; }
+  .opcion.incorrecta { border-color: var(--rojo-borde); background: var(--rojo-bg); color: var(--rojo); }
+  .opcion.incorrecta .letra { color: var(--rojo); }
+  .opcion:disabled { cursor: default; }
+  .explicacion { display: none; margin-top: 1rem; padding: 0.9rem 1rem 0.9rem 1.1rem; background: #fffbeb; border-left: 3px solid var(--naranja); border-radius: 0 6px 6px 0; font-size: 0.875rem; line-height: 1.65; color: var(--texto); }
+  .explicacion.visible { display: block; animation: fadeIn 0.22s ease; }
+  .explicacion strong { color: var(--azul-oscuro); }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+  .resultado { display: none; background: var(--blanco); border: 1px solid var(--borde); border-radius: 12px; padding: 2.5rem 2rem 2rem; margin: 1.5rem 0 2rem; text-align: center; }
+  .resultado.visible { display: block; animation: fadeIn 0.3s ease; }
+  .resultado-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--naranja); font-weight: 600; margin-bottom: 0.5rem; }
+  .resultado h2 { font-family: 'Lora', serif; font-size: 1.75rem; font-weight: 700; color: var(--azul-oscuro); margin-bottom: 0.3rem; }
+  .resultado-nota { font-size: 3.2rem; font-weight: 700; color: var(--azul-oscuro); line-height: 1; margin: 1rem 0 0.3rem; font-family: 'Lora', serif; }
+  .resultado-nota span { color: var(--naranja); }
+  .calif-badge { display: inline-block; padding: 5px 16px; border-radius: 99px; font-size: 0.9rem; font-weight: 600; margin: 0.6rem 0 1.5rem; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 0 0 1.5rem; }
+  .stat { background: var(--fondo); border: 1px solid var(--borde); border-radius: 8px; padding: 0.9rem 0.5rem; }
+  .stat-num { font-size: 1.9rem; font-weight: 700; font-family: 'Lora', serif; }
+  .stat-lab { font-size: 0.78rem; color: var(--texto-suave); margin-top: 2px; }
+  .resultado-hint { font-size: 0.85rem; color: var(--texto-suave); margin-bottom: 1.2rem; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 0.7rem 1.6rem; border-radius: 7px; font-family: 'Source Sans 3', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.18s; text-decoration: none; }
+  .btn-naranja { background: var(--naranja); color: white; }
+  .btn-naranja:hover { background: #b45309; transform: translateY(-1px); }
+  .divider { text-align: center; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--texto-suave); margin: 2rem 0 1.5rem; display: flex; align-items: center; gap: 1rem; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--borde); }
+  @media (max-width: 580px) {
+    main { padding: 1.2rem 1rem 4rem; }
+    .card { padding: 1.1rem 1.1rem; }
+    .stats { grid-template-columns: 1fr 1fr; }
+    .header-top { padding: 1rem; gap: 0.8rem; }
+    .header-meta { padding: 0.5rem 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <img class="header-logo"
+      src="https://opositorgva.wordpress.com/wp-content/uploads/2024/04/cropped-opositar-en-valencia-logo-sin-fondo.png"
+      alt="Opositar en Valencia"
+      onerror="this.style.display='none'">
+    <div class="header-textos">
+      <div class="header-site">Opositar en Valencia · GVA</div>
+      <div class="header-titulo">Tema 3 — Estatut d'Autonomia de la Comunitat Valenciana</div>
+      <div class="header-sub">Títulos I, II y III · Territorio, Derechos y la Generalitat · Subalterno APT-APF</div>
+    </div>
+  </div>
+  <div class="header-meta">
+    <div class="header-meta-inner">
+      <span>📋 50 preguntas</span>
+      <span>🎯 Nivel medio-alto</span>
+      <span>🔀 Orden aleatorio en cada intento</span>
+      <span>✅ Explicación en cada respuesta</span>
+    </div>
+  </div>
+</header>
+
+<div class="barra-wrap">
+  <div class="barra-inner">
+    <div class="barra-track"><div class="barra-fill" id="barraFill"></div></div>
+    <span class="barra-num" id="barraNum">0 / 50</span>
+    <span class="barra-score"><span class="ok" id="scoreOk">✓ 0</span> &nbsp;<span class="ko" id="scoreKo">✗ 0</span></span>
+  </div>
+</div>
+
+<main id="mainContent"></main>
+
+<script>
+const BANCO = [
+  {
+    p: "Según el artículo 1.1 del Estatuto de Autonomía, ¿con qué denominación oficial se constituye la Comunidad Autónoma?",
+    ops: ["Reino de Valencia", "País Valenciano", "Comunitat Valenciana", "Región de Valencia"],
+    c: 2,
+    exp: "<strong>Respuesta correcta: C.</strong> El art. 1.1 del Estatuto de Autonomía establece que el pueblo valenciano se constituye en Comunidad Autónoma con la denominación de <em>Comunitat Valenciana</em>. Esta denominación en valenciano es la oficial, y el precepto la define como expresión de su identidad diferenciada como nacionalidad histórica."
+  },
+  {
+    p: "¿Cómo define el artículo 1.1 del Estatuto a la Comunitat Valenciana en términos de identidad política?",
+    ops: ["Como región autónoma integrada en el Estado federal español", "Como expresión de su identidad diferenciada como nacionalidad histórica", "Como comunidad plurinacional con derecho a la autodeterminación", "Como entidad territorial de segundo nivel dentro del Estado unitario"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 1.1 del Estatuto la define como expresión de su identidad diferenciada como nacionalidad histórica, ejerciendo el derecho de autogobierno que la Constitución Española reconoce. El término 'nacionalidad histórica' es relevante y distingue a la Comunitat Valenciana de simples regiones administrativas."
+  },
+  {
+    p: "¿Cuál es la norma institucional básica de la Comunitat Valenciana, según el artículo 1.2 del Estatuto?",
+    ops: ["La Constitución Española de 1978", "El propio Estatuto de Autonomía", "El Reglamento de Les Corts Valencianes", "La Ley del Consell"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 1.2 del Estatuto establece que la Comunitat Valenciana se rige por el propio Estatuto, que es su norma institucional básica. La Constitución es la norma suprema del Estado, pero el Estatuto es la norma básica específica de la Comunitat, equivalente a su 'constitución' autonómica."
+  },
+  {
+    p: "¿Qué territorio comprende la Comunitat Valenciana según el artículo 2 del Estatuto?",
+    ops: ["El territorio de las comarcas históricas del antiguo Reino de Valencia", "El de los municipios integrados en las provincias de Alicante, Castellón y Valencia", "El territorio delimitado por los límites geográficos del Mar Mediterráneo y los montes Ibéricos", "El de los municipios que voluntariamente se hayan adherido al Estatuto"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 2 del Estatuto define el territorio de la Comunitat Valenciana como el de los municipios integrados en las provincias de Alicante, Castellón y Valencia. La delimitación es de base provincial, lo que coincide con la organización territorial del Estado prevista en la Constitución."
+  },
+  {
+    p: "Conforme al artículo 3.1 del Estatuto, ¿quiénes gozan de la condición política de valencianos?",
+    ops: ["Todos los nacidos en el territorio de la Comunitat Valenciana", "Todos los ciudadanos españoles que tengan o adquieran vecindad administrativa en cualquier municipio de la Comunitat Valenciana", "Solo los ciudadanos españoles con más de dos años de residencia efectiva en la Comunitat", "Los ciudadanos españoles y europeos empadronados en la Comunitat Valenciana"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 3.1 del Estatuto establece que gozan de la condición política de valencianos todos los ciudadanos españoles que tengan o adquieran vecindad administrativa en cualquier municipio de la Comunitat. El criterio es la vecindad administrativa, no el nacimiento ni la residencia continuada."
+  },
+  {
+    p: "¿Cómo describe el artículo 4.1 del Estatuto la Bandera de la Comunitat Valenciana?",
+    ops: ["Cuatro barras rojas sobre fondo amarillo, coronadas sobre franja azul junto al asta", "Tres franjas horizontales azul, blanca y roja con el escudo de la Comunitat", "Cuatro barras amarillas sobre fondo rojo, con franja verde junto al asta", "Las barras de la Corona de Aragón sin ningún añadido"],
+    c: 0,
+    exp: "<strong>Respuesta correcta: A.</strong> El art. 4.1 del Estatuto describe la Senyera como la bandera tradicional compuesta por cuatro barras rojas sobre fondo amarillo, coronadas sobre franja azul junto al asta. Esta franja azul es el elemento diferenciador respecto a otras banderas de la Corona de Aragón y hace referencia a la conquista del Reino de Valencia."
+  },
+  {
+    p: "Según el artículo 5.1 del Estatuto, ¿en qué ciudad y edificio tiene su sede la Generalitat?",
+    ops: ["En el Palau de la Generalitat, en la ciudad de Valencia", "En el Palacio de los Borja, en la ciudad de Valencia", "En el Palacio del Temple, en la ciudad de Valencia", "En el Palacio de la Diputación Provincial, en la ciudad de Valencia"],
+    c: 0,
+    exp: "<strong>Respuesta correcta: A.</strong> El art. 5.1 del Estatuto establece que la sede de la Generalitat será el palacio de este nombre —el Palau de la Generalitat— en la ciudad de Valencia. No debe confundirse con la sede de Les Corts, que según el art. 21.2 se sitúa en el Palacio de los Borja."
+  },
+  {
+    p: "De acuerdo con el artículo 6.1 del Estatuto, ¿cuál es la lengua propia de la Comunitat Valenciana?",
+    ops: ["El castellano", "El catalán", "El valenciano", "El valenciano y el castellano en régimen de cooficialidad plena e igualitaria"],
+    c: 2,
+    exp: "<strong>Respuesta correcta: C.</strong> El art. 6.1 del Estatuto establece que la lengua propia de la Comunitat Valenciana es el valenciano. Tanto el valenciano como el castellano son lenguas oficiales (art. 6.2), pero el valenciano es la lengua propia por razón histórica y territorial. La distinción entre 'lengua propia' y 'lengua oficial' es relevante para el examen."
+  },
+  {
+    p: "Conforme al artículo 6.2 del Estatuto, ¿cuáles son las lenguas oficiales en la Comunitat Valenciana?",
+    ops: ["Solo el valenciano, por ser la lengua propia", "Solo el castellano, como idioma oficial del Estado", "El valenciano y el castellano, siendo el castellano el idioma oficial del Estado", "El valenciano, el castellano y el aranés en las zonas de predominio lingüístico"],
+    c: 2,
+    exp: "<strong>Respuesta correcta: C.</strong> El art. 6.2 del Estatuto establece que tanto el valenciano como el castellano son idiomas oficiales en la Comunitat Valenciana, matizando que el castellano es el idioma oficial del Estado. Todos tienen derecho a conocerlos, usarlos y a recibir enseñanza del y en idioma valenciano."
+  },
+  {
+    p: "¿Qué institución es la encargada de la normativa lingüística del idioma valenciano, según el artículo 6.8 del Estatuto?",
+    ops: ["La Conselleria d'Educació de la Generalitat", "El Consell Valenciá de Cultura", "L'Acadèmia Valenciana de la Llengua", "La Universitat de València"],
+    c: 2,
+    exp: "<strong>Respuesta correcta: C.</strong> El art. 6.8 del Estatuto establece que L'Acadèmia Valenciana de la Llengua es la institución normativa del idioma valenciano. Según el art. 41, su normativa lingüística es de aplicación obligatoria en todas las administraciones públicas de la Comunitat Valenciana."
+  },
+  {
+    p: "Según el artículo 7.2 del Estatuto, ¿qué eficacia tienen las normas y disposiciones de la Generalitat?",
+    ops: ["Eficacia universal, independientemente del lugar donde se encuentre el destinatario", "Eficacia territorial, salvo en los casos en que sea aplicable el estatuto personal u otras normas de extraterritorialidad", "Eficacia limitada al ámbito municipal en el que se dicten", "Eficacia subordinada a las normas estatales, incluso en materias de competencia exclusiva"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 7.2 del Estatuto establece el principio de territorialidad: las normas de la Generalitat y el Derecho Foral Valenciano tienen eficacia territorial con las excepciones del estatuto personal y otras normas de extraterritorialidad. Esto implica que, en principio, se aplican solo dentro del territorio de la Comunitat."
+  },
+  {
+    p: "¿Qué derecho reconoce el artículo 9.2 del Estatuto a los ciudadanos valencianos en sus relaciones con la Administración autonómica?",
+    ops: ["El derecho a obtener respuesta motivada en cualquier idioma de la Unión Europea", "El derecho a dirigirse a la Administración de la Comunitat en cualquiera de sus dos lenguas oficiales y a recibir respuesta en la misma lengua utilizada", "El derecho a que todos los documentos administrativos se redacten en valenciano", "El derecho a la asistencia lingüística gratuita en todos los procedimientos"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 9.2 del Estatuto reconoce el derecho de los ciudadanos valencianos a dirigirse a la Administración de la Comunitat en cualquiera de las dos lenguas oficiales —valenciano o castellano— y a recibir respuesta en la misma lengua utilizada. Este derecho es una concreción del principio de cooficialidad lingüística."
+  },
+  {
+    p: "¿Qué garantiza el artículo 15 del Estatuto en relación con la pobreza y la exclusión social?",
+    ops: ["Una prestación económica de inserción de cuantía fija para todos los desempleados", "El derecho de los ciudadanos valencianos en estado de necesidad a la solidaridad y a una renta de ciudadanía en los términos previstos en la Ley", "La gratuidad de todos los servicios sociales básicos para la población en riesgo de exclusión", "La obligación del Consell de garantizar el pleno empleo en el territorio valenciano"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 15 del Estatuto garantiza el derecho de los ciudadanos valencianos en estado de necesidad a la solidaridad y a una renta de ciudadanía, cuyas condiciones concretas remite a la ley. Es una manifestación del Estado social y de la acción protectora de la Generalitat frente a la pobreza y la exclusión."
+  },
+  {
+    p: "¿Qué garantiza el artículo 16 del Estatuto en materia de vivienda?",
+    ops: ["La propiedad de una vivienda a todos los ciudadanos valencianos sin recursos", "El derecho de acceso a una vivienda digna de los ciudadanos valencianos, con ayudas reguladas por ley especialmente para colectivos vulnerables", "La gratuidad del alquiler para jóvenes menores de 30 años", "La preferencia en la adjudicación de viviendas de protección oficial a los residentes de más de diez años"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 16 del Estatuto garantiza el derecho de acceso a una vivienda digna de los ciudadanos valencianos, encomendando a la ley la regulación de las ayudas para promoverlo, especialmente en favor de jóvenes, personas sin medios, mujeres maltratadas, personas con discapacidad y otros colectivos vulnerables."
+  },
+  {
+    p: "Según el artículo 17.2 del Estatuto, ¿qué derecho medioambiental reconoce a toda persona?",
+    ops: ["El derecho a recibir indemnización por daños medioambientales causados por la Administración", "El derecho a gozar de una vida y un medio ambiente seguro, sano y ecológicamente equilibrado", "El derecho a participar en los procedimientos de evaluación de impacto ambiental", "El derecho a exigir la restauración de espacios naturales degradados"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 17.2 del Estatuto reconoce que toda persona tiene derecho a gozar de una vida y un medio ambiente seguro, sano y ecológicamente equilibrado. La Generalitat, en virtud de este precepto, queda obligada a proteger el medio ambiente, la diversidad biológica, los procesos ecológicos y otras áreas de especial importancia ecológica."
+  },
+  {
+    p: "¿Qué instituciones forman parte de la Generalitat según el artículo 20.2 del Estatuto?",
+    ops: ["Les Corts Valencianes, el President y el Consell", "Les Corts Valencianes, el President, el Consell y el Tribunal Superior de Justicia", "Les Corts Valencianes, el Consell y la Sindicatura de Comptes", "Les Corts Valencianes, el President, el Consell y el Síndic de Greuges"],
+    c: 0,
+    exp: "<strong>Respuesta correcta: A.</strong> El art. 20.2 del Estatuto enumera como instituciones que forman parte de la Generalitat: Les Corts Valencianes o Les Corts, el President y el Consell. Las demás instituciones (Sindicatura de Comptes, Síndic de Greuges, Consell Valenciá de Cultura, AVL, Consell Jurídic Consultiu y Comité Econòmic i Social) son también instituciones de la Generalitat pero se mencionan en el art. 20.3 de forma separada."
+  },
+  {
+    p: "¿Cuáles son también instituciones de la Generalitat, según el artículo 20.3 del Estatuto?",
+    ops: ["La Sindicatura de Comptes, el Síndic de Greuges, el Consell Valenciá de Cultura, l'Acadèmia Valenciana de la Llengua, el Consell Jurídic Consultiu y el Comité Econòmic i Social", "El Tribunal Superior de Justicia, la Fiscalía y el Consejo General del Poder Judicial en la Comunitat", "La Diputació Provincial, los ayuntamientos y las mancomunidades de municipios", "El Consell Jurídic Consultiu, el Defensor del Pueblo y el Tribunal de Cuentas"],
+    c: 0,
+    exp: "<strong>Respuesta correcta: A.</strong> El art. 20.3 del Estatuto enumera seis instituciones adicionales: Sindicatura de Comptes, Síndic de Greuges, Consell Valenciá de Cultura, L'Acadèmia Valenciana de la Llengua, Consell Jurídic Consultiu y Comité Econòmic i Social. Estas seis instituciones son fáciles de confundir en examen y conviene memorizarlas en conjunto."
+  },
+  {
+    p: "Según el artículo 21.1 del Estatuto, ¿a quién corresponde la potestad legislativa dentro de la Comunitat Valenciana?",
+    ops: ["Al Consell de la Generalitat", "Al President de la Generalitat", "A Les Corts, que representan al pueblo", "Al Gobierno del Estado en materias de competencia compartida"],
+    c: 2,
+    exp: "<strong>Respuesta correcta: C.</strong> El art. 21.1 del Estatuto atribuye la potestad legislativa de la Comunitat Valenciana a Les Corts, que representan al pueblo. El Estatuto añade que Les Corts son inviolables y gozan de autonomía, características que también tienen las Cortes Generales en el ámbito estatal."
+  },
+  {
+    p: "¿Dónde tienen su sede Les Corts Valencianes, según el artículo 21.2 del Estatuto?",
+    ops: ["En el Palau de la Generalitat, en Valencia", "En el Palacio de los Borja, en la ciudad de Valencia", "En el Palacio del Temple, en Valencia", "En el edificio de La Nau de la Universitat de València"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 21.2 del Estatuto fija la sede de Les Corts en el Palacio de los Borja de la ciudad de Valencia. No obstante, pueden celebrar sesiones en otros lugares de la Comunitat cuando sus órganos de gobierno así lo acuerden. Debe distinguirse de la sede de la Generalitat (el Palau de la Generalitat, art. 5)."
+  },
+  {
+    p: "¿Cuál de las siguientes NO es una función de Les Corts enumerada en el artículo 22 del Estatuto?",
+    ops: ["Aprobar los presupuestos de la Generalitat", "Elegir al President de la Generalitat", "Nombrar directamente a los Consellers del Consell", "Designar los Senadores que representan a la Comunitat Valenciana"],
+    c: 2,
+    exp: "<strong>Respuesta correcta: C.</strong> Les Corts no nombran directamente a los Consellers: conforme al art. 29.2, los Consellers son designados por el President de la Generalitat. Las demás opciones sí figuran en el art. 22: aprobar los presupuestos (letra a), elegir al President (letra c) y designar a los Senadores autonómicos (letra j)."
+  },
+  {
+    p: "¿Cuántos Diputados mínimos establece el artículo 23.1 del Estatuto para la composición de Les Corts?",
+    ops: ["No inferior a setenta y cinco Diputados", "No inferior a noventa y nueve Diputados", "No inferior a ciento veinte Diputados", "No inferior a ochenta y cinco Diputados"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 23.1 del Estatuto establece que Les Corts estarán constituidas por un número de Diputados y Diputadas no inferior a noventa y nueve, elegidos por sufragio universal, libre, igual, directo y secreto. La cifra de 99 es el mínimo constitucional autonómico; la ley electoral puede fijar un número superior."
+  },
+  {
+    p: "Según el artículo 23.3 del Estatuto, ¿ante qué órgano jurisdiccional se decide la inculpación, prisión y juicio de los miembros de Les Corts por actos delictivos cometidos en el territorio valenciano?",
+    ops: ["Ante el Tribunal Supremo", "Ante el Tribunal Superior de Justicia de la Comunitat Valenciana", "Ante la Audiencia Provincial correspondiente", "Ante el Tribunal Constitucional"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 23.3 del Estatuto establece el aforamiento de los Diputados de Les Corts: en el territorio valenciano, la competencia para decidir sobre su inculpación, prisión y juicio corresponde al Tribunal Superior de Justicia de la Comunitat Valenciana. Fuera del territorio, la competencia recae en la Sala de lo Penal del Tribunal Supremo."
+  },
+  {
+    p: "¿Cuántos años dura el mandato de Les Corts según el artículo 23.4 del Estatuto?",
+    ops: ["Tres años", "Cuatro años", "Cinco años", "Cuatro años, salvo disolución anticipada decretada por el Consell"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 23.4 del Estatuto fija el mandato de Les Corts en cuatro años. El mandato de sus Diputados finaliza cuatro años después de las elecciones o el día de la disolución de la Cámara por el President de la Generalitat, igual que en el modelo constitucional del Congreso (art. 68.4 CE)."
+  },
+  {
+    p: "Conforme al artículo 24 del Estatuto, ¿qué mayoría se exige para aprobar la Ley Electoral Valenciana?",
+    ops: ["Mayoría simple de Les Corts", "Mayoría absoluta de Les Corts", "Las dos terceras partes de Les Corts en votación de conjunto", "Mayoría de tres quintos de Les Corts"],
+    c: 2,
+    exp: "<strong>Respuesta correcta: C.</strong> El art. 24 del Estatuto exige que la Ley Electoral Valenciana sea aprobada en votación de conjunto por las dos terceras partes de Les Corts. Esta mayoría cualificada reforzada garantiza el consenso político en la regulación del sistema electoral y evita que una mayoría coyuntural lo modifique unilateralmente."
+  },
+  {
+    p: "Según el artículo 24 del Estatuto, ¿qué mínimo de Diputados debe garantizar la Ley Electoral Valenciana por cada circunscripción provincial?",
+    ops: ["Un mínimo de 15 Diputados por circunscripción", "Un mínimo de 20 Diputados por circunscripción", "Un mínimo de 25 Diputados por circunscripción", "Un mínimo de 30 Diputados por circunscripción"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 24 del Estatuto establece que la Ley Electoral Valenciana garantizará un mínimo de 20 Diputados por cada circunscripción provincial (Alicante, Castellón y Valencia), distribuyendo el resto en proporción a la población, con una desproporción máxima de relación uno a tres."
+  },
+  {
+    p: "¿Qué mayoría se requiere para adoptar acuerdos en Les Corts, según el artículo 25.4 del Estatuto?",
+    ops: ["Mayoría absoluta en todos los casos", "Mayoría de tres quintos salvo disposición contraria", "Mayoría simple, excepto disposición expresa en sentido contrario, y con quórum de la mitad más uno de los Diputados", "Mayoría de dos tercios para las leyes y mayoría simple para las resoluciones"],
+    c: 2,
+    exp: "<strong>Respuesta correcta: C.</strong> El art. 25.4 del Estatuto establece que Les Corts adoptan acuerdos por mayoría simple, excepto disposición expresa en contrario. Para ello es necesaria la presencia de al menos la mitad más uno de los Diputados (quórum de asistencia). Este sistema es paralelo al del art. 79 CE para las Cortes Generales."
+  },
+  {
+    p: "¿En qué plazo deben publicarse las leyes de la Generalitat en el Diari Oficial de la Generalitat Valenciana, según el artículo 25.5 del Estatuto?",
+    ops: ["En el plazo de diez días desde su aprobación", "En el plazo de quince días desde su aprobación", "En el plazo de veinte días desde su aprobación", "En el plazo de un mes desde su aprobación"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 25.5 del Estatuto establece que las leyes de la Generalitat serán promulgadas, en nombre del Rey, por el President y publicadas en las dos lenguas oficiales en el Diari Oficial de la Generalitat en el plazo de quince días desde su aprobación. Para su entrada en vigor rige la fecha de publicación en el DOGV."
+  },
+  {
+    p: "Conforme al artículo 25.3 del Estatuto, ¿quién puede convocar sesiones extraordinarias de Les Corts?",
+    ops: ["Solo el President de la Generalitat, a propuesta del Consell", "El Presidente de Les Corts a propuesta del Consell, de la Diputación Permanente o a petición de una quinta parte de los Diputados", "Solo el Consell, mediante acuerdo del Consell de Ministros autonómico", "El Presidente de Les Corts o la mayoría absoluta de los Diputados"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 25.3 del Estatuto establece que las sesiones extraordinarias son convocadas por el Presidente de Les Corts a propuesta del Consell, de la Diputación Permanente o a petición de una quinta parte de los Diputados o del número de grupos parlamentarios que determine el Reglamento. Destacar que para Les Corts se exige la quinta parte de los Diputados, frente a la mayoría absoluta exigida en las Cortes Generales (art. 73.2 CE)."
+  },
+  {
+    p: "¿A quién corresponde proponer candidatos a la Presidencia de la Generalitat, según el artículo 27.1 del Estatuto?",
+    ops: ["Al Consell de la Generalitat en pleno", "A los Grupos Parlamentarios de Les Corts", "Al Presidente de Les Corts, previa consulta a los grupos políticos", "Al Rey, mediante propuesta del Presidente del Gobierno central"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 27.1 del Estatuto establece que el President de la Generalitat será elegido por Les Corts de entre sus miembros, siendo nombrado por el Rey, y que la facultad de presentar candidatos corresponde a los Grupos Parlamentarios. Es el Presidente de Les Corts quien, previa consulta, propone el candidato a debate."
+  },
+  {
+    p: "¿Qué mayoría necesita el candidato a President de la Generalitat en la primera votación de investidura, según el artículo 27.4 del Estatuto?",
+    ops: ["Mayoría simple de los miembros de derecho de Les Corts", "Mayoría absoluta de los miembros de derecho de Les Corts en primera votación; si no se logra, mayoría simple cuarenta y ocho horas después", "Mayoría de dos tercios en primera votación y mayoría absoluta en segunda", "Mayoría de tres quintos en primera votación y mayoría simple en segunda"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 27.4 del Estatuto establece que se requiere mayoría absoluta de los miembros de derecho de Les Corts en primera votación. Si no se logra, cuarenta y ocho horas después se repite la votación siendo suficiente la mayoría simple. El esquema es paralelo al art. 99.3 CE para la investidura del Presidente del Gobierno."
+  },
+  {
+    p: "¿Qué sucede si transcurridos dos meses desde la primera votación de investidura ningún candidato obtiene la confianza de Les Corts, según el artículo 27.6 del Estatuto?",
+    ops: ["El Consell en funciones convoca un referéndum sobre la forma de gobierno", "El Presidente de Les Corts, por acuerdo de la Mesa, disuelve la Cámara y el President en funciones convoca nuevas elecciones", "El Tribunal Superior de Justicia designa un Presidente provisional", "El Gobierno del Estado interviene mediante el artículo 155 CE"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 27.6 del Estatuto prevé que si transcurren dos meses desde la primera votación sin que ningún candidato obtenga la confianza, el Presidente de Les Corts, por acuerdo de la Mesa, disolverá la Cámara y el President de la Generalitat en funciones convocará nuevas elecciones."
+  },
+  {
+    p: "¿Cuáles son las funciones principales del President de la Generalitat enumeradas en el artículo 28.1 del Estatuto?",
+    ops: ["Presidir el Consell, representar a la Comunitat y nombrar a los magistrados del TSJCV", "Dirigir la acción del Consell, coordinar sus funciones y ostentar la más alta representación de la Comunitat, así como la ordinaria del Estado en ésta", "Proponer las leyes a Les Corts, ejercer la potestad reglamentaria y convocar referéndum", "Administrar el patrimonio de la Generalitat y ejecutar el presupuesto autonómico"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 28.1 del Estatuto establece tres funciones principales del President: dirigir la acción del Consell, coordinar las funciones de éste y ostentar la más alta representación de la Comunitat Valenciana, así como la ordinaria del Estado en ésta. También es, por extensión, el presidente del Consell."
+  },
+  {
+    p: "Conforme al artículo 28.2 del Estatuto, ¿qué fracción mínima de Diputados debe proponer la moción de censura al President de la Generalitat?",
+    ops: ["La décima parte de los Diputados", "La quinta parte de los Diputados", "La cuarta parte de los Diputados", "Un tercio de los Diputados"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 28.2 del Estatuto exige que la moción de censura sea propuesta como mínimo por la quinta parte de los Diputados y Diputadas, con inclusión de un candidato a la Presidencia (moción constructiva). En el modelo estatal (art. 113.2 CE) el umbral es la décima parte; en la Comunitat Valenciana el umbral es más alto."
+  },
+  {
+    p: "¿Qué mayoría se requiere para aprobar la moción de censura al President de la Generalitat, según el artículo 28.2 del Estatuto?",
+    ops: ["Mayoría simple de Les Corts", "Mayoría de tres quintos de Les Corts", "Mayoría absoluta de Les Corts", "Mayoría de dos tercios de Les Corts"],
+    c: 2,
+    exp: "<strong>Respuesta correcta: C.</strong> El art. 28.2 del Estatuto establece que la moción de censura se aprueba por mayoría absoluta de Les Corts. Al igual que en el modelo estatal (art. 113.1 CE), se exige mayoría absoluta para garantizar que el cambio de gobierno cuente con un respaldo parlamentario sólido."
+  },
+  {
+    p: "¿En qué condición puede el President de la Generalitat disolver Les Corts, según el artículo 28.4 del Estatuto?",
+    ops: ["En cualquier momento, con el simple acuerdo del Consell", "Con el acuerdo previo del Consell, pero no cuando esté en tramitación una moción de censura que reúna los requisitos reglamentarios", "Solo cuando ningún candidato haya obtenido la investidura en dos meses", "Únicamente con la autorización previa del Gobierno del Estado"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 28.4 del Estatuto permite al President disolver Les Corts mediante Decreto con el acuerdo previo del Consell, pero establece la limitación expresa de que no podrá hacerlo cuando esté en tramitación una moción de censura que reúna los requisitos exigidos en el Reglamento de Les Corts."
+  },
+  {
+    p: "¿Qué órgano es el Consell y qué potestades ostenta, según el artículo 29.1 del Estatuto?",
+    ops: ["El parlamento autonómico; ostenta la potestad legislativa y de control del ejecutivo", "El órgano colegiado de gobierno de la Generalitat; ostenta la potestad ejecutiva y reglamentaria, y dirige la Administración", "El órgano consultivo supremo de la Generalitat; ostenta funciones de asesoramiento jurídico", "El órgano de control presupuestario; ostenta funciones fiscalizadoras del gasto público"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 29.1 del Estatuto define el Consell como el órgano colegiado de gobierno de la Generalitat, que ostenta la potestad ejecutiva y reglamentaria y, en particular, dirige la Administración que se encuentra bajo la autoridad de la Generalitat. Es el equivalente autonómico del Gobierno central."
+  },
+  {
+    p: "¿Quién designa a los Consellers del Consell, según el artículo 29.2 del Estatuto?",
+    ops: ["Les Corts mediante votación de mayoría simple", "El President de la Generalitat", "El Pleno del Consell a propuesta del Secretario General", "El Rey, a propuesta del President de la Generalitat"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 29.2 del Estatuto establece que los Consellers son designados por el President de la Generalitat. Esta facultad refleja el modelo presidencializado del ejecutivo autonómico, en el que el President tiene plena capacidad de configurar su equipo de gobierno y de cesar a sus miembros."
+  },
+  {
+    p: "¿Ante quién responde políticamente el Consell de forma solidaria, según el artículo 30 del Estatuto?",
+    ops: ["Ante el President de la Generalitat", "Ante Les Corts", "Ante el Tribunal Superior de Justicia de la Comunitat Valenciana", "Ante el Gobierno del Estado"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 30 del Estatuto establece que el Consell responde políticamente de forma solidaria ante Les Corts, sin perjuicio de la responsabilidad directa de cada Conseller por su gestión. Este precepto es paralelo al art. 108 CE para el Gobierno central."
+  },
+  {
+    p: "Según el artículo 30 del Estatuto, ¿qué mayoría se requiere para que se apruebe la cuestión de confianza planteada por el President?",
+    ops: ["Mayoría absoluta de Les Corts", "Mayoría de tres quintos de Les Corts", "Mayoría simple de Les Corts", "Mayoría de dos tercios de Les Corts"],
+    c: 2,
+    exp: "<strong>Respuesta correcta: C.</strong> El art. 30 del Estatuto establece que la cuestión de confianza se considerará aprobada cuando obtenga la mayoría simple de Les Corts. Este umbral es más bajo que el de la moción de censura (mayoría absoluta), lo que facilita la continuidad del Gobierno pero exige que al menos no haya mayoría contraria."
+  },
+  {
+    p: "¿Cuál es el órgano en que culmina la organización judicial en el ámbito territorial de la Comunitat Valenciana, según el artículo 33.1 del Estatuto?",
+    ops: ["La Audiencia Provincial de Valencia", "El Tribunal Superior de Justicia de la Comunitat Valenciana", "El Consell de la Justicia de la Comunitat Valenciana", "La Sala de lo Civil y Penal del Tribunal Supremo"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 33.1 del Estatuto establece que el Tribunal Superior de Justicia de la Comunitat Valenciana (TSJCV) es el órgano jurisdiccional en el que culmina la organización judicial en el ámbito territorial de la Comunitat. Esto es coherente con el art. 152.1 CE, que prevé el TSJA para las CCAA que lo accedan."
+  },
+  {
+    p: "¿Quién nombra al Presidente del Tribunal Superior de Justicia de la Comunitat Valenciana, según el artículo 34.1 del Estatuto?",
+    ops: ["El President de la Generalitat, a propuesta del Consell Jurídic Consultiu", "El Rey, a propuesta del Consejo General del Poder Judicial", "Les Corts Valencianes mediante votación por mayoría de tres quintos", "El Ministerio de Justicia, a propuesta de la Conselleria competente"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 34.1 del Estatuto establece que el Presidente del TSJCV es nombrado por el Rey a propuesta del Consejo General del Poder Judicial. Esta competencia corresponde al CGPJ y no a la Generalitat, lo que refleja la independencia del poder judicial respecto de los ejecutivos autonómicos."
+  },
+  {
+    p: "¿Qué es el Síndic de Greuges según el artículo 38 del Estatuto?",
+    ops: ["El órgano de control externo económico y presupuestario de la Generalitat", "El Alto Comisionado de Les Corts para defender los derechos y libertades reconocidos en la CE y el Estatuto en el ámbito valenciano", "El órgano consultivo supremo del Consell en materia jurídica", "El órgano consultivo de la Generalitat en materia económica y social"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 38 del Estatuto define el Síndic de Greuges como el Alto Comisionado de Les Corts, designado por éstas, que vela por la defensa de los derechos y libertades reconocidos en el Título I de la CE y el Título II del Estatuto. Anualmente informa a Les Corts. Es el equivalente autonómico del Defensor del Pueblo."
+  },
+  {
+    p: "¿A qué institución corresponde el control externo económico y presupuestario de la Generalitat, según el artículo 39 del Estatuto?",
+    ops: ["Al Consell Jurídic Consultiu", "Al Comité Econòmic i Social", "A la Sindicatura de Comptes", "Al Tribunal de Cuentas del Estado"],
+    c: 2,
+    exp: "<strong>Respuesta correcta: C.</strong> El art. 39 del Estatuto atribuye a la Sindicatura de Comptes el control externo económico y presupuestario de la actividad financiera de la Generalitat, de los entes locales de su territorio y del resto del sector público valenciano. Es el equivalente autonómico del Tribunal de Cuentas del Estado."
+  },
+  {
+    p: "¿Qué función tiene el Consell Valenciá de Cultura según el artículo 40 del Estatuto?",
+    ops: ["Determinar la normativa lingüística del idioma valenciano", "Ser la institución consultiva y asesora de las instituciones públicas en materias que afecten a la cultura valenciana", "Controlar el gasto de las instituciones culturales de la Generalitat", "Gestionar las subvenciones del sector cultural valenciano"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 40 del Estatuto define el Consell Valenciá de Cultura como la institución consultiva y asesora de las instituciones públicas de la Comunitat en materias específicas que afecten a la cultura valenciana. No debe confundirse con L'Acadèmia Valenciana de la Llengua, que determina la normativa lingüística del valenciano."
+  },
+  {
+    p: "¿Cuál es la función de L'Acadèmia Valenciana de la Llengua según el artículo 41 del Estatuto, y qué carácter tiene su normativa?",
+    ops: ["Promover la cultura valenciana; su normativa es orientativa para las administraciones", "Determinar y elaborar la normativa lingüística del idioma valenciano; su normativa es de aplicación obligatoria en todas las administraciones públicas de la Comunitat", "Coordinar la enseñanza del valenciano en los centros educativos; su normativa vincula solo a la enseñanza reglada", "Asesorar al Consell en materia lingüística; sus resoluciones son de aplicación facultativa"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 41 del Estatuto establece que L'Acadèmia Valenciana de la Llengua tiene por función determinar y elaborar la normativa lingüística del idioma valenciano, y que dicha normativa es de aplicación obligatoria en todas las administraciones públicas de la Comunitat Valenciana. Esto le otorga un carácter normativo de especial relevancia."
+  },
+  {
+    p: "¿Qué órgano es el Comité Econòmic i Social según el artículo 42 del Estatuto?",
+    ops: ["El órgano que gestiona las relaciones laborales de los empleados públicos de la Generalitat", "El órgano consultivo del Consell y de las instituciones públicas en materias económicas, sociolaborales y de empleo", "El órgano encargado de elaborar el presupuesto de la Generalitat", "El órgano de mediación en conflictos laborales entre empresas y trabajadores"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 42 del Estatuto define el Comité Econòmic i Social como el órgano consultivo del Consell y, en general, de las instituciones públicas de la Comunitat en materias económicas, sociolaborales y de empleo. Actúa como espacio de participación de los agentes sociales y económicos en la vida institucional de la Comunitat."
+  },
+  {
+    p: "¿Cuál es la función del Consell Jurídic Consultiu según el artículo 43 del Estatuto?",
+    ops: ["El control externo económico de las instituciones autonómicas", "El órgano consultivo supremo del Consell, de la Administración Autonómica y, en su caso, de las administraciones locales en materia jurídica", "El órgano de resolución de conflictos competenciales entre la Generalitat y los entes locales", "La defensa jurídica de la Generalitat ante los tribunales"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 43 del Estatuto define el Consell Jurídic Consultiu como el órgano consultivo supremo del Consell, de la Administración Autonómica y, en su caso, de las administraciones locales de la Comunitat en materia jurídica. Es el equivalente autonómico del Consejo de Estado, aunque sin idénticas competencias."
+  },
+  {
+    p: "¿Qué forma reviste la legislación de Les Corts prevista en el Estatuto, según el artículo 44.1?",
+    ops: ["Ley Orgánica de la Generalitat", "Ley de la Generalitat", "Decreto-ley de la Generalitat", "Reglamento de la Generalitat"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 44.1 del Estatuto establece que la legislación de Les Corts prevista en el propio Estatuto revestirá la forma de Ley de la Generalitat. Esta denominación distingue las normas con rango de ley aprobadas por Les Corts de las normas reglamentarias del Consell."
+  },
+  {
+    p: "Conforme al artículo 44.3 del Estatuto, ¿qué puede hacer Les Corts respecto a la potestad de dictar normas con rango de ley?",
+    ops: ["Delegar en el President de la Generalitat la potestad de dictar normas con rango de ley mediante reales decretos", "Delegar en el Consell la potestad de dictar normas con rango de ley, denominadas Decretos Legislativos, en los mismos términos que establece la CE para las delegaciones del Congreso al Gobierno", "Transferir la potestad legislativa a los entes locales en materias de interés municipal", "Compartir la iniciativa legislativa con el Gobierno del Estado en materias de competencia concurrente"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 44.3 del Estatuto permite a Les Corts delegar en el Consell la potestad de dictar normas con rango de ley, denominadas Decretos Legislativos, en los mismos términos que los arts. 82 a 85 CE para las delegaciones del Congreso al Gobierno. Es la traslación del sistema estatal al ámbito autonómico."
+  },
+  {
+    p: "¿Qué posibilidad legislativa urgente reconoce el artículo 44.4 del Estatuto al Consell?",
+    ops: ["Dictar Decretos de urgencia sobre cualquier materia de competencia exclusiva sin control parlamentario posterior", "Dictar disposiciones legislativas provisionales por medio de decretos-leyes, sometidos a debate y votación en Les Corts, en casos de extraordinaria y urgente necesidad", "Dictar normas con rango de ley en materia presupuestaria sin necesidad de delegación previa", "Proponer a Les Corts la tramitación de leyes por el procedimiento de urgencia en materias de orden público"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 44.4 del Estatuto reconoce al Consell la facultad de dictar decretos-leyes en casos de extraordinaria y urgente necesidad, siguiendo el modelo del art. 86 CE. Estos decretos-leyes quedan sometidos a debate y votación en Les Corts para su convalidación o derogación."
+  },
+  {
+    p: "¿Qué mayoría exige el artículo 44.5 del Estatuto para el desarrollo legislativo de las instituciones de la Generalitat previstas en el artículo 20.3?",
+    ops: ["Mayoría simple de Les Corts", "Mayoría absoluta de Les Corts", "Mayoría de tres quintas partes de Les Corts", "Unanimidad de Les Corts"],
+    c: 2,
+    exp: "<strong>Respuesta correcta: C.</strong> El art. 44.5 del Estatuto establece que el desarrollo legislativo de las instituciones enumeradas en el art. 20.3 (Sindicatura de Comptes, Síndic de Greuges, Consell Valenciá de Cultura, AVL, Consell Jurídic Consultiu y Comité Econòmic i Social) requerirá para su aprobación una mayoría de tres quintas partes de Les Corts."
+  },
+  {
+    p: "Según el artículo 45 del Estatuto, ¿qué ocurre en defecto del Derecho Valenciano propio en materias de competencia exclusiva?",
+    ops: ["Se aplica el Derecho de la Unión Europea con carácter preferente", "Se aplica supletoriamente el Derecho Estatal", "Se aplica el Derecho de la Comunidad Autónoma vecina más similar", "Les Corts deben legislar obligatoriamente en el plazo de seis meses"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 45 del Estatuto establece el principio de preferencia del Derecho Valenciano en materias de competencia exclusiva, y determina que en defecto de Derecho propio será de aplicación supletoria el Derecho Estatal. Este principio refleja el modelo de distribución de competencias de la Constitución."
+  },
+  {
+    p: "Conforme al artículo 47 del Estatuto, ¿qué jurisdicción controla la constitucionalidad de las Leyes de la Generalitat?",
+    ops: ["La jurisdicción contencioso-administrativa, mediante recurso de apelación", "El Tribunal Superior de Justicia de la Comunitat Valenciana", "El Tribunal Constitucional, estando excluidas del conocimiento de la jurisdicción contenciosa-administrativa", "El Tribunal Supremo, Sala de lo Contencioso-Administrativo"],
+    c: 2,
+    exp: "<strong>Respuesta correcta: C.</strong> El art. 47 del Estatuto establece que las Leyes de la Generalitat quedan excluidas del conocimiento de la jurisdicción contencioso-administrativa y están sujetas solo al control de constitucionalidad ejercido por el Tribunal Constitucional. En cambio, las normas reglamentarias y actos administrativos de la Generalitat sí son recurribles ante lo contencioso-administrativo."
+  },
+  {
+    p: "Según el artículo 10.2 del Estatuto, ¿qué instrumento elaborará Les Corts para recoger los principios, derechos y directrices en el ámbito de la política social?",
+    ops: ["El Plan Estratégico de Servicios Sociales de la Comunitat Valenciana", "La Carta de Derechos Sociales de la Comunitat Valenciana, elaborada mediante una Ley de Les Corts", "El Reglamento de Servicios Sociales de la Generalitat, aprobado por el Consell", "El Estatuto de Ciudadanía Social de la Comunitat Valenciana"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 10.2 del Estatuto establece que mediante una Ley de Les Corts se elaborará la Carta de Derechos Sociales de la Comunitat Valenciana, como expresión del espacio cívico de convivencia social de los valencianos. Esta Carta contendrá el conjunto de principios, derechos y directrices que informen la actuación pública de la Generalitat en materia social."
+  },
+  {
+    p: "¿Qué garantiza el artículo 13.4 del Estatuto en relación con las personas sordas?",
+    ops: ["El derecho a intérpretes de lengua de signos en todos los procedimientos judiciales y administrativos", "El uso de la lengua de signos propia de los sordos, que deberá ser objeto de enseñanza, protección y respeto", "La exención del deber de conocer las lenguas oficiales de la Comunitat Valenciana", "La gratuidad de todos los servicios de interpretación en lengua de signos"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 13.4 del Estatuto establece expresamente que la Generalitat garantizará el uso de la lengua de signos propia de los sordos, que deberá ser objeto de enseñanza, protección y respeto. Este precepto reconoce la lengua de signos como una herramienta de comunicación que merece protección estatutaria."
+  },
+  {
+    p: "Según el artículo 3.3 del Estatuto, ¿qué derecho tienen las comunidades de valencianos asentadas fuera de la Comunitat?",
+    ops: ["El derecho a votar en las elecciones autonómicas desde el extranjero", "El derecho a solicitar, como tales, el reconocimiento de su valencianidad entendida como el derecho a participar, colaborar y compartir la vida social y cultural del pueblo valenciano", "El derecho a la doble nacionalidad valenciana y española de pleno derecho", "El derecho al reconocimiento automático de su condición política de valencianos"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 3.3 del Estatuto reconoce a las comunidades de valencianos asentadas fuera de la Comunitat el derecho a solicitar el reconocimiento de su valencianidad, entendida como el derecho a participar, colaborar y compartir la vida social y cultural del pueblo valenciano. Una Ley de Les Corts regulará el alcance de este reconocimiento."
+  },
+  {
+    p: "¿Ante quién responde individualmente cada miembro del Consell según el artículo 30 del Estatuto, además de la responsabilidad solidaria del conjunto del Consell?",
+    ops: ["Ante el President de la Generalitat únicamente", "Ante Les Corts, por su responsabilidad directa en su propia gestión", "Ante el Tribunal de Cuentas del Estado por la gestión económica", "Ante el Consell Jurídic Consultiu por sus actos administrativos"],
+    c: 1,
+    exp: "<strong>Respuesta correcta: B.</strong> El art. 30 del Estatuto establece que el Consell responde solidariamente ante Les Corts, sin perjuicio de la responsabilidad directa de cada miembro por su gestión. Así, cada Conseller puede ser llamado individualmente a rendir cuentas ante el parlamento por su área de gestión, independientemente de la responsabilidad colectiva del Gobierno."
+  }
+];
+
+// ── ALEATORIZACIÓN ──
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function prepararPreguntas() {
+  const mezcladas = shuffle(BANCO);
+  return mezcladas.map(q => {
+    const respuestaTextoCorrecta = q.ops[q.c];
+    const opsNuevas = shuffle(q.ops);
+    const nuevoC = opsNuevas.indexOf(respuestaTextoCorrecta);
+    return { p: q.p, ops: opsNuevas, c: nuevoC, exp: q.exp };
+  });
+}
+
+let preguntas = [];
+let respondidas = 0, correctas = 0, incorrectas = 0;
+
+function actualizarBarra() {
+  const pct = preguntas.length ? (respondidas / preguntas.length) * 100 : 0;
+  document.getElementById('barraFill').style.width = pct + '%';
+  document.getElementById('barraNum').textContent = respondidas + ' / ' + preguntas.length;
+  document.getElementById('scoreOk').textContent = '✓ ' + correctas;
+  document.getElementById('scoreKo').textContent = '✗ ' + incorrectas;
+}
+
+function responder(qi, oi) {
+  const q = preguntas[qi];
+  const btns = document.querySelectorAll('[data-qi="' + qi + '"]');
+  btns.forEach(b => b.disabled = true);
+  btns.forEach((b, j) => {
+    if (j === q.c) b.classList.add('correcta');
+    else if (j === oi && oi !== q.c) b.classList.add('incorrecta');
+  });
+  document.getElementById('exp-' + qi).classList.add('visible');
+  respondidas++;
+  if (oi === q.c) correctas++; else incorrectas++;
+  actualizarBarra();
+  if (respondidas === preguntas.length) setTimeout(mostrarResultado, 700);
+}
+
+function mostrarResultado() {
+  const pct = Math.round((correctas / preguntas.length) * 100);
+  document.getElementById('resPunt').innerHTML = correctas + ' <span>/ ' + preguntas.length + '</span>';
+  document.getElementById('resCorr').textContent = correctas;
+  document.getElementById('resIncorr').textContent = incorrectas;
+  document.getElementById('resPct').textContent = pct + '%';
+
+  let txt, col, bg;
+  if (pct >= 90)      { txt = '🏆 Sobresaliente'; col = '#166534'; bg = '#f0fdf4'; }
+  else if (pct >= 75) { txt = '✅ Notable';        col = '#1e3a5f'; bg = '#eff6ff'; }
+  else if (pct >= 60) { txt = '📘 Aprobado';       col = '#92400e'; bg = '#fffbeb'; }
+  else                { txt = '❌ Insuficiente — ¡Sigue practicando!'; col = '#991b1b'; bg = '#fef2f2'; }
+
+  document.getElementById('resCalif').innerHTML =
+    '<span class="calif-badge" style="background:' + bg + ';color:' + col + '">' + txt + '</span>';
+
+  const el = document.getElementById('resultado');
+  el.classList.add('visible');
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function render() {
+  respondidas = 0; correctas = 0; incorrectas = 0;
+  preguntas = prepararPreguntas();
+  actualizarBarra();
+
+  const main = document.getElementById('mainContent');
+  main.innerHTML = '';
+  const letras = ['A','B','C','D'];
+
+  preguntas.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    const opsHTML = q.ops.map((op, j) =>
+      `<button class="opcion" data-qi="${i}" onclick="responder(${i},${j})">
+        <span class="letra">${letras[j]})</span><span>${op}</span>
+      </button>`
+    ).join('');
+
+    card.innerHTML =
+      `<div class="card-num">Pregunta ${i + 1} de ${preguntas.length}</div>
+       <div class="card-pregunta">${q.p}</div>
+       <div class="opciones">${opsHTML}</div>
+       <div class="explicacion" id="exp-${i}">${q.exp}</div>`;
+
+    main.appendChild(card);
+  });
+
+  const sep = document.createElement('div');
+  sep.className = 'divider';
+  sep.textContent = 'Fin del test';
+  main.appendChild(sep);
+
+  const res = document.createElement('div');
+  res.className = 'resultado';
+  res.id = 'resultado';
+  res.innerHTML =
+    `<div class="resultado-eyebrow">Resultado final</div>
+     <h2>Test completado</h2>
+     <div class="resultado-nota" id="resPunt">0 <span>/ 50</span></div>
+     <div id="resCalif"></div>
+     <div class="stats">
+       <div class="stat"><div class="stat-num" id="resCorr" style="color:#166534">0</div><div class="stat-lab">Correctas</div></div>
+       <div class="stat"><div class="stat-num" id="resIncorr" style="color:#991b1b">0</div><div class="stat-lab">Incorrectas</div></div>
+       <div class="stat"><div class="stat-num" id="resPct">0%</div><div class="stat-lab">% aciertos</div></div>
+     </div>
+     <p class="resultado-hint">Desplázate hacia arriba para revisar las explicaciones de cada pregunta.</p>
+     <button class="btn btn-naranja" onclick="render(); window.scrollTo({top:0,behavior:'smooth'})">↺ Repetir con nuevo orden</button>`;
+  main.appendChild(res);
+}
+
+render();
+</script>
+</body>
+</html>
